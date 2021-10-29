@@ -9,6 +9,14 @@
   [registrar addMethodCallDelegate:instance channel:channel];
 }
 
+- (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result{
+    // NSLog(@"call.arguments: %@", call.arguments);
+    [self reflectMethod:UserManager.class
+               instance:[UserManager new]
+                   Call:call
+                 result:result];
+}
+
 /// iOS 类方法/实例方法映射(方法格式: * (void)*MethodName*:(id)params callback:(FlutterResult)callback;)
 ///
 /// @param cls 类参数: UserManager.class
