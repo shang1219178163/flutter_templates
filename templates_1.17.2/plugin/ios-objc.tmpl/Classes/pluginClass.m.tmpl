@@ -9,12 +9,61 @@
   [registrar addMethodCallDelegate:instance channel:channel];
 }
 
-- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-  if ([@"getPlatformVersion" isEqualToString:call.method]) {
-    result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
-  } else {
+/// iOS 类方法/实例方法映射(方法格式: * (void)*MethodName*:(id)params callback:(FlutterResult)callback;)
+///
+/// @param cls 类参数: UserManager.class
+/// @param instance 类方法传 nil, 实例方法传对应实例
+/// @param call FlutterPlugin 参数
+/// @param result FlutterPlugin 参数
+- (void)reflectMethod:(Class)cls
+             instance:(nullable NSObject *)instance
+                 Call:(FlutterMethodCall *)call
+               result:(FlutterResult)result {
+    NSString *method = call.method; //获取函数名
+    id arguments = call.arguments; //获取参数列表
+    SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:callback:", method]);
+    
+    if ([cls respondsToSelector:selector]) {
+        NSMethodSignature *methodSignature = [cls methodSignatureForSelector:selector]; // Signature
+
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
+        invocation.target = cls;// target
+        
+        invocation.selector = selector;
+        [invocation setArgument:&arguments atIndex:2];
+        [invocation setArgument:&result atIndex:3];
+        [invocation invoke];
+        return;
+    }
+    
+    if (instance && [instance respondsToSelector:selector]) {
+        NSMethodSignature *methodSignature = [cls instanceMethodSignatureForSelector:selector]; // Signature
+    
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
+        invocation.target = instance;// target
+        
+        invocation.selector = selector;
+        [invocation setArgument:&arguments atIndex:2];
+        [invocation setArgument:&result atIndex:3];
+        [invocation invoke];
+        return;
+    }
+
+    NSLog(@"call.method: %@, call.arguments: %@", call.method, call.arguments);
     result(FlutterMethodNotImplemented);
-  }
+}
+
+#pragma mark - funtions
+
++ (void)getPlatformVersion:(id)params callback:(FlutterResult)callback{
+    callback(UIDevice.currentDevice.systemVersion);
+}
+
+- (void)getAppVersion:(id)params callback:(FlutterResult)callback{
+    NSDictionary *info = NSBundle.mainBundle.infoDictionary;
+    NSString *result = info[@"CFBundleShortVersionString"];
+    callback(result);
+//    callback(info.description);
 }
 
 @end
