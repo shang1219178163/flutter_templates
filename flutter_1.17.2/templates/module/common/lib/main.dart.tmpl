@@ -101,7 +101,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _appVersion = 'Unknown';
   String _platformVersion = 'Unknown';
-  
+
   @override
   void initState() {
     super.initState();
@@ -113,7 +113,7 @@ class _MyAppState extends State<MyApp> {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      platformVersion = await {{pluginDartClass}}.getPlatformVersion();
+      platformVersion = await {{pluginDartClass}}.platformVersion;
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -127,6 +127,7 @@ class _MyAppState extends State<MyApp> {
       _platformVersion = platformVersion;
     });
   }
+  
   
   Future<void> handleSystemVersion() async {
     String platformVersion = await {{pluginDartClass}}.getPlatformVersion();
