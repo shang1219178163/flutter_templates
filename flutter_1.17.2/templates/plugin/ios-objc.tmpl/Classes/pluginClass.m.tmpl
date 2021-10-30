@@ -11,8 +11,8 @@
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result{
     // NSLog(@"call.arguments: %@", call.arguments);
-    [self reflectMethod:UserManager.class
-               instance:[UserManager new]
+    [self reflectMethod:{{pluginClass}}.class
+               instance:[{{pluginClass}} new]
                    Call:call
                  result:result];
 }
