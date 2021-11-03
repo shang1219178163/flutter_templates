@@ -11,6 +11,8 @@ flutter: packages/flutter_tools/templates
 
 # Usage
 
+> 首先将 packages/flutter_tools/templates 文件压缩（备份）；防止文件异常造成 flutter create 无法执行的错误；如果报错可以解压压缩包恢复sdk 自带的文件；
+
 两种办法：
 
 1. 把对应文件夹类的所有文件覆盖掉 flutter 路径 packages/flutter_tools/templates 内所有文件即可；
